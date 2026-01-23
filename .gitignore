@@ -1,0 +1,15 @@
+# Bỏ qua các file build của Java
+target/
+*.class
+*.jar
+
+# Bỏ qua file cấu hình của IDE
+.idea/
+*.iml
+.vscode/
+
+# Bỏ qua dữ liệu Database (CỰC KỲ QUAN TRỌNG)
+postgres-data/
+
+# Bỏ qua file biến môi trường (nếu có dùng .env)
+.env

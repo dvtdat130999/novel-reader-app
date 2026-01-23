@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # ... (Service db-truyen và pgadmin giữ nguyên) ...
+  db-novel:
+    image: postgres:15-alpine
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: noveldb # Đảm bảo đúng tên DB
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  # --- THÊM MỚI: SPRING BOOT APP ---
+  app-backend:
+    build: ./backend  # Đường dẫn tới folder chứa Dockerfile
+    container_name: spring_boot_app
+    ports:
+      - "8080:8080"   # Map port Web App ra ngoài
+    environment:
+      # Ghi đè cấu hình trong application.properties
+      # Lưu ý: host là 'postgres_container' (trùng container_name của DB) hoặc 'db-novel'
+      DB_URL: jdbc:postgresql://postgres_container:5432/noveldb
+      DB_USERNAME: admin
+      DB_PASSWORD: password123
+    depends_on:
+      - db-novel # Chờ DB chạy xong mới chạy App
