@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor // Tự sinh Constructor không tham số (Bắt buộc cho JPA)
 @AllArgsConstructor // Tự sinh Constructor đầy đủ tham số
 @Builder // Hỗ trợ khởi tạo Object theo style: Genre.builder().name("ABC").build()
-public class Genre extends com.demo.entity.BaseEntity {
+public class Genre extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

@@ -1,4 +1,4 @@
-package com.demo.entity;
+package com.novelreader.demo.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

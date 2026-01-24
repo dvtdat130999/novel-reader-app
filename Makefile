@@ -42,3 +42,10 @@ build:
 check:
 	cd backend && ./mvnw spotless:check
 	cd backend && ./mvnw test
+
+migrate:
+	@if [ -z "$(name)" ]; then echo "Error: Please provide a name (e.g., make migrate name=add_column_phone)"; exit 1; fi
+	@TIMESTAMP=$$(date +%Y%m%d%H%M%S); \
+	FILENAME="V$${TIMESTAMP}__$(name).sql"; \
+	touch backend/src/main/resources/db/migration/$$FILENAME; \
+	echo "--- Created empty migration file: backend/src/main/resources/db/migration/$$FILENAME ---"
