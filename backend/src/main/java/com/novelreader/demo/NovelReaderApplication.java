@@ -7,15 +7,13 @@ import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
 
 @Slf4j
-@SpringBootApplication(exclude = {
-        SecurityAutoConfiguration.class,
-        UserDetailsServiceAutoConfiguration.class
-})
+@SpringBootApplication(
+    exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class NovelReaderApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(NovelReaderApplication.class, args);
-		log.info("Running.");
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(NovelReaderApplication.class, args);
 
+    log.info("Running.");
+  }
 }
