@@ -1,3 +1,23 @@
+# Lệnh nạp file .env
+ifneq ("$(wildcard .env)","")
+    include .env
+endif
+
+# Export từng biến ra môi trường của hệ thống (để Spring Boot hiểu)
+# Cách này giúp tránh lỗi ký tự lạ khi parse hàng loạt bằng shell
+export DB_URL
+export DB_USERNAME
+export DB_PASSWORD
+
+
+# Lệnh kiểm tra biến môi trường (Để sửa lỗi admin=)
+debug:
+	@echo "--- DEBUG ENVIRONMENT VARIABLES ---"
+	@echo "DB_URL: $(DB_URL)"
+	@echo "DB_USERNAME: $(DB_USERNAME)"
+	@echo "DB_PASSWORD: $(DB_PASSWORD)"
+	@echo "----------------------------------"
+
 # Chạy app
 run:
 	cd backend && ./mvnw spring-boot:run

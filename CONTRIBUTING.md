@@ -46,3 +46,24 @@ make check
 * Viết mô tả PR rõ ràng, ngắn gọn về những thay đổi bạn đã thực hiện.
 
 ---
+
+# Quy trình phát triển (Updated 2026)
+
+## 1. Công cụ yêu cầu
+
+- IntelliJ IDEA Ultimate (Plugin: JPA Buddy, EnvFile, google-java-format).
+- Docker Desktop (Chạy PostgreSQL).
+- Make (Cài qua Git Bash/Chocolatey).
+
+## 2. Quản lý Database
+
+- KHÔNG dùng `ddl-auto=update`. Sử dụng **Flyway Migration**.
+- Luôn tạo file SQL mới tại `backend/src/main/resources/db/migration/`.
+- Tên file chuẩn: `V<Number>__<Description>.sql` (2 dấu gạch dưới).
+- Dùng **JPA Buddy -> Diff** để sinh file SQL tự động từ Entity Java.
+
+## 3. Câu lệnh hằng ngày (Makefile)
+
+- `make format`: Tự động căn chỉnh code theo Google Style.
+- `make test`: Chạy Unit Test và kiểm tra độ phủ (Coverage > 70%).
+- `make run`: Khởi động ứng dụng (Tự động nạp biến môi trường từ .env).
