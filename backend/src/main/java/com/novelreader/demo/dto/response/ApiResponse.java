@@ -15,4 +15,13 @@ public class ApiResponse<T> {
     private String message; // Thông báo (ex: "Register success")
 
     private T result; // Dữ liệu chính (ex: UserResponse)
+
+    // --- THÊM HÀM NÀY ---
+    // Hàm tiện ích để trả về thành công nhanh gọn
+    public static <T> ApiResponse<T> success(T result) {
+        return ApiResponse.<T>builder()
+                .code(10000) // Hoặc code thành công bạn quy định
+                .result(result)
+                .build();
+    }
 }

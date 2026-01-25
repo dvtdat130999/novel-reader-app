@@ -6,6 +6,7 @@ import com.novelreader.demo.dto.response.UserResponse;
 import com.novelreader.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,15 +23,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(
             @RequestBody @Valid UserRegistrationRequest request) {
-        UserResponse data = userService.registerUser(request);
-
-        ApiResponse<UserResponse> response =
-                ApiResponse.<UserResponse>builder()
-                        .code(201)
-                        .message("User registered successfully")
-                        .result(data)
-                        .build();
-
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(userService.registerUser(request)));
     }
 }
