@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Slf4j
 @SpringBootApplication(
-    exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
+        exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 @EnableJpaAuditing
 public class NovelReaderApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(NovelReaderApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(NovelReaderApplication.class, args);
 
-    log.info("Running.");
-  }
+        log.info("Running.");
+    }
 }

@@ -11,13 +11,13 @@ import lombok.*;
 @AllArgsConstructor // Tự sinh Constructor đầy đủ tham số
 @Builder // Hỗ trợ khởi tạo Object theo style: Genre.builder().name("ABC").build()
 public class Genre extends BaseEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false, unique = true, length = 100)
-  private String name;
+    @Column(nullable = false, unique = true, length = 100)
+    private String name;
 
-  @Column(length = 255)
-  private String description;
+    @Column(length = 255)
+    private String description;
 }
