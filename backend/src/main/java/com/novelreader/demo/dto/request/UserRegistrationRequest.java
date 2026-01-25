@@ -1,9 +1,6 @@
 package com.novelreader.demo.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +10,21 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class UserRegistrationRequest implements Serializable {
-    @NotNull @NotEmpty @NotBlank String username;
+    @NotNull(message = "NULL_EXCEPTION")
+    @NotEmpty(message = "EMPTY_EXCEPTION")
+    @NotBlank(message = "BLANK_EXCEPTION")
+    @Size(min = 3, message = "USERNAME_INVALID") // Key in error code
+    String username;
 
-    @NotNull @Email @NotEmpty @NotBlank String email;
+    @NotNull(message = "NULL_EXCEPTION")
+    @NotEmpty(message = "EMPTY_EXCEPTION")
+    @NotBlank(message = "BLANK_EXCEPTION")
+    @Email(message = "EMAIL_INVALID")
+    String email;
 
-    @NotNull @NotEmpty @NotBlank String password;
+    @NotNull(message = "NULL_EXCEPTION")
+    @NotEmpty(message = "EMPTY_EXCEPTION")
+    @NotBlank(message = "BLANK_EXCEPTION")
+    @Size(min = 6, message = "PASSWORD_INVALID")
+    String password;
 }
