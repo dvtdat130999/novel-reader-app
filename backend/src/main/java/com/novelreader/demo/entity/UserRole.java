@@ -1,3 +1,5 @@
 package com.novelreader.demo.entity;
 
-public enum UserRole {}
+public enum UserRole {
+    USER,
+}

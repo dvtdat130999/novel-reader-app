@@ -1,34 +1,48 @@
 package com.novelreader.demo.service.impl;
 
+import com.novelreader.demo.dto.request.UserRegistrationRequest;
+import com.novelreader.demo.dto.response.UserResponse;
 import com.novelreader.demo.entity.User;
+import com.novelreader.demo.entity.UserRole;
 import com.novelreader.demo.repository.UserRepository;
 import com.novelreader.demo.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Service // Đánh dấu đây là Bean Service (Logic)
-@RequiredArgsConstructor // Tự tạo Constructor cho các biến final (Best Practice cho DI)
+@Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public User registerUser(User request) {
-        // 1. Validate: Kiểm tra email đã tồn tại chưa
+    public UserResponse registerUser(UserRegistrationRequest request) {
+        // 1. Validate (Giữ nguyên như bài trước)
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists: " + request.getEmail());
+            throw new RuntimeException("Email already exists");
         }
 
-        // 2. Validate: Kiểm tra username
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already taken: " + request.getUsername());
-        }
+        // 2. Mapping: DTO -> Entity (Thủ công)
+        // Sau này dùng MapStruct sẽ nhanh hơn
+        User user =
+            User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(
+                        request.getPassword()) // Lưu ý: Chưa mã hóa (sẽ làm ở bài Security)
+                .role(UserRole.USER) // Mặc định luôn là USER
+                .build();
 
-        // 3. Logic: Ở đây sau này sẽ mã hóa password (BCrypt)
-        // Tạm thời giữ nguyên password text (Sẽ học Security sau)
+        // 3. Save
+        User savedUser = userRepository.save(user);
 
-        // 4. Gọi Thủ kho lưu vào DB
-        return userRepository.save(request);
+        // 4. Mapping: Entity -> Response DTO
+        return UserResponse.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .email(savedUser.getEmail())
+                .build();
     }
 }
