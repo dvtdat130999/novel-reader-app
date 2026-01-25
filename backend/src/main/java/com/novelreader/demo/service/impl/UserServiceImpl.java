@@ -29,13 +29,13 @@ public class UserServiceImpl implements UserService {
         // 2. Mapping: DTO -> Entity (Thủ công)
         // Sau này dùng MapStruct sẽ nhanh hơn
         User user =
-            User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(
-                        request.getPassword()) // Lưu ý: Chưa mã hóa (sẽ làm ở bài Security)
-                .role(UserRole.USER) // Mặc định luôn là USER
-                .build();
+                User.builder()
+                        .username(request.getUsername())
+                        .email(request.getEmail())
+                        .password(
+                                request.getPassword()) // Lưu ý: Chưa mã hóa (sẽ làm ở bài Security)
+                        .role(UserRole.USER) // Mặc định luôn là USER
+                        .build();
 
         // 3. Save
         User savedUser = userRepository.save(user);
