@@ -1,13 +1,13 @@
-# --- Giai đoạn 1: Build (Nhà bếp) ---
-# Sử dụng Maven kèm JDK 21 (Thay vì 17)
+# --- Giai đoạn 1: Build---
+# Sử dụng Maven kèm JDK 21
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 COPY . .
 # Lệnh đóng gói
 RUN mvn clean package -DskipTests
 
-# --- Giai đoạn 2: Run (Phục vụ) ---
-# Sử dụng JRE 21 siêu nhẹ (Thay vì 17)
+# --- Giai đoạn 2: Run---
+# Sử dụng JRE 21 siêu nhẹ
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 

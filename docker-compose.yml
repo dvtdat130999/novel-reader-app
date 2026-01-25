@@ -5,9 +5,12 @@ services:
   db-novel:
     image: postgres:15-alpine
     container_name: postgres_container
+    # Nạp file .env để Docker lấy các biến POSTGRES_USER, POSTGRES_PASSWORD...
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: ${DB_ROOT_USER}      # Lấy từ .env
-      POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD} # Lấy từ .env
+      POSTGRES_USER: ${DB_USERNAME}      # Lấy từ .env
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # Lấy từ .env
       POSTGRES_DB: ${DB_NAME}             # Lấy từ .env
     ports:
       - "5432:5432"
@@ -24,7 +27,7 @@ services:
       # Spring Boot cần kết nối vào DB, nên ta cũng truyền biến từ .env vào đây
       # Lưu ý: host vẫn là tên service 'db-novel' hoặc container_name 'postgres_container'
       DB_URL: jdbc:postgresql://postgres_container:5432/${DB_NAME}
-      DB_USERNAME: ${DB_ROOT_USER}
-      DB_PASSWORD: ${DB_ROOT_PASSWORD}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db-novel
