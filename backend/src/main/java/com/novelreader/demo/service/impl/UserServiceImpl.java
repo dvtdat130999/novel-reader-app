@@ -4,6 +4,8 @@ import com.novelreader.demo.dto.request.UserRegistrationRequest;
 import com.novelreader.demo.dto.response.UserResponse;
 import com.novelreader.demo.entity.User;
 import com.novelreader.demo.entity.UserRole;
+import com.novelreader.demo.exception.AppException;
+import com.novelreader.demo.exception.ErrorCode;
 import com.novelreader.demo.repository.UserRepository;
 import com.novelreader.demo.service.UserService;
 import jakarta.transaction.Transactional;
@@ -21,7 +23,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse registerUser(UserRegistrationRequest request) {
         // 1. Validate (Giữ nguyên như bài trước)
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
         // 2. Mapping: DTO -> Entity (Thủ công)
