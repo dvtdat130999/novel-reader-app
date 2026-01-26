@@ -35,20 +35,20 @@ jobs:
           # Danh sách các biến môi trường muốn gửi sang Server (cách nhau dấu phẩy)
           envs: DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,DB_PASSWORD
           script: |
+            export DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME
+            export DB_PASSWORD=$DB_PASSWORD
+            
+            cd /home/ubuntu
             # Lúc này trên Server đã có các biến $DB_PASSWORD, $DOCKERHUB_USERNAME
             
-            # 1. Login Docker Hub
+            # Login Docker Hub
             echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             
-            # 2. Vào thư mục chứa file compose
-            cd /home/ubuntu
+            # 1. Tắt container cũ (Thêm 2>/dev/null để không báo lỗi đỏ nếu chưa có)
+            docker-compose -f docker-compose.prod.yml down || true
             
-            # 3. Dọn dẹp container cũ (để tránh conflict)
-            docker stop app-backend db-novel || true
-            docker rm app-backend db-novel || true
+            # 2. Pull Image mới (Dùng dấu gạch ngang docker-compose)
+            docker-compose -f docker-compose.prod.yml pull
             
-            # 4. Chạy Docker Compose
-            # Vì Docker Compose hỗ trợ biến môi trường từ Shell, 
-            # nó sẽ tự lấy $DB_PASSWORD và $DOCKERHUB_USERNAME điền vào file .yml
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d
+            # 3. Chạy lại (Dùng dấu gạch ngang docker-compose)
+            docker-compose -f docker-compose.prod.yml up -d
