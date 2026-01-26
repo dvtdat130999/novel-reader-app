@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  app-backend:
+    # Dùng image đã push lên Hub
+    image: ${{DOCKERHUB_USERNAME}}/app-truyen-backend:latest 
+    container_name: app-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db-novel:5432/noveldb
+      - DB_USERNAME=postgres
+      # Biến này sẽ được truyền từ Server (file .env hoặc export)
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - db-novel
+    networks:
+      - app-network
+
+  db-novel:
+    image: postgres:15-alpine
+    container_name: db-novel
+    restart: always
+    environment:
+      - POSTGRES_DB=noveldb
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data_prod:
