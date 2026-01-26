@@ -24,6 +24,8 @@ services:
     environment:
       - POSTGRES_DB=noveldb
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports: # <--- THÊM ĐOẠN NÀY
+      - "5432:5432" # Để máy chủ EC2 (Localhost của SSH) nhìn thấy cổng 5432
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
     networks:
