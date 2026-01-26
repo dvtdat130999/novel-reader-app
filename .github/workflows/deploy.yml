@@ -3,45 +3,52 @@ name: CD - Deploy to AWS EC2
 on:
   push:
     branches: [ "main" ]
-  workflow_run:
-    workflows: ["Docker Image CI"] # Chờ workflow CI chạy xong mới chạy cái này (Tuỳ chọn)
-    types:
-      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3 # Action nổi tiếng để SSH
+      - uses: actions/checkout@v4
+
+      # 1. Copy file docker-compose.prod.yml lên Server
+      - name: Copy docker-compose file to EC2
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
-          envs: DB_PASSWORD,DB_USERNAME,DB_URL
+          source: "docker-compose.prod.yml"
+          target: "/home/ubuntu/"
+
+      # 2. SSH vào và Deploy
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        # QUAN TRỌNG: Map Secrets vào biến môi trường của Step này trước
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # Lấy từ GitHub Secret
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          # Danh sách các biến môi trường muốn gửi sang Server (cách nhau dấu phẩy)
+          envs: DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,DB_PASSWORD
           script: |
-            # 1. Đăng nhập Docker Hub (Lấy user/pass từ env của server hoặc hardcode tạm cho bài học này)
-            # Lưu ý: Cách bảo mật hơn là dùng GitHub Secrets truyền vào env, nhưng ta làm đơn giản trước.
-            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            # Lúc này trên Server đã có các biến $DB_PASSWORD, $DOCKERHUB_USERNAME
             
-            # 2. Pull Image mới nhất
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/app-truyen-backend:latest
+            # 1. Login Docker Hub
+            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             
-            # 3. Dừng và xóa container cũ (nếu có)
-            docker stop app-backend || true
-            docker rm app-backend || true
+            # 2. Vào thư mục chứa file compose
+            cd /home/ubuntu
             
-            # 4. Chạy Container mới (Lưu ý environment variables)
-            # Ở bài trước ta đã thống nhất dùng biến DB_PASSWORD
-            docker run -d \
-              --name app-backend \
-              -p 8080:8080 \
-              -e DB_URL=$DB_URL \
-              -e DB_USERNAME=$DB_USERNAME \
-              -e DB_PASSWORD=$DB_PASSWORD \
-              --network app-network \
-              ${{ secrets.DOCKERHUB_USERNAME }}/app-truyen-backend:latest
-              
-            # Ghi chú: Để đơn giản bài này, tôi chưa chạy DB qua Docker Compose trên EC2.
-            # Bước tiếp theo chúng ta sẽ copy file docker-compose.yml lên để chạy cả cụm.
+            # 3. Dọn dẹp container cũ (để tránh conflict)
+            docker stop app-backend db-novel || true
+            docker rm app-backend db-novel || true
+            
+            # 4. Chạy Docker Compose
+            # Vì Docker Compose hỗ trợ biến môi trường từ Shell, 
+            # nó sẽ tự lấy $DB_PASSWORD và $DOCKERHUB_USERNAME điền vào file .yml
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d

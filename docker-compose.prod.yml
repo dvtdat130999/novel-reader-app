@@ -2,7 +2,7 @@ version: '3.8'
 services:
   app-backend:
     # Dùng image đã push lên Hub
-    image: ${{DOCKERHUB_USERNAME}}/app-truyen-backend:latest 
+    image: ${DOCKERHUB_USERNAME}/app-truyen-backend:latest
     container_name: app-backend
     restart: always
     ports:
