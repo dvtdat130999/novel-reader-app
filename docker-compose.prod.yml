@@ -18,7 +18,13 @@ services:
       - db-novel
     networks:
       - app-network
-    # Thêm cô Lễ tân Nginx
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-southeast-1 # Region của bạn (Singapore)
+        awslogs-group: /ecs/app-truyen-backend # Tên nhóm log trên CloudWatch
+        awslogs-create-group: "true"
+  # Thêm cô Lễ tân Nginx
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
