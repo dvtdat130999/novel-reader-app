@@ -1,53 +1,55 @@
 version: '3.8'
 services:
   app-backend:
-    # Dùng image đã push lên Hub
     image: ${DOCKERHUB_USERNAME}/app-truyen-backend:latest
-    container_name: app-backend
-    restart: always
-    # BỎ dòng ports 8080:8080 đi (Giám đốc không tiếp khách trực tiếp nữa)
-    # Hoặc đổi thành expose để chỉ nội bộ nhìn thấy
     expose:
       - "8080"
     environment:
       - DB_URL=jdbc:postgresql://db-novel:5432/noveldb
       - DB_USERNAME=postgres
-      # Biến này sẽ được truyền từ Server (file .env hoặc export)
       - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db-novel
-    networks:
-      - app-network
     logging:
       driver: awslogs
       options:
-        awslogs-region: ap-southeast-1 # Region của bạn (Singapore)
-        awslogs-group: /ecs/app-truyen-backend # Tên nhóm log trên CloudWatch
+        awslogs-region: ap-southeast-1
+        awslogs-group: /ecs/app-backend
         awslogs-create-group: "true"
-  # Thêm cô Lễ tân Nginx
-  nginx:
-    image: nginx:latest
-    container_name: nginx-proxy
-    restart: always
-    ports:
-      - "80:80" # Mở cổng 80 ra thế giới
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro # Mount file cấu hình vào
-    depends_on:
-      - app-backend
     networks:
       - app-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app-backend
+    logging: # (Xem ai gọi API)
+      driver: awslogs
+      options:
+        awslogs-region: ap-southeast-1
+        awslogs-group: /ecs/nginx-proxy
+        awslogs-create-group: "true"
+    networks:
+      - app-network
+
   db-novel:
     image: postgres:15-alpine
-    container_name: db-novel
-    restart: always
+    command: postgres -c 'log_min_duration_statement=1000' # <--- (Bắt query chậm > 1s)
     environment:
       - POSTGRES_DB=noveldb
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    ports: # <--- THÊM ĐOẠN NÀY
-      - "5432:5432" # Để máy chủ EC2 (Localhost của SSH) nhìn thấy cổng 5432
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
+    logging: # <---  (Xem log SQL)
+      driver: awslogs
+      options:
+        awslogs-region: ap-southeast-1
+        awslogs-group: /ecs/db-novel
+        awslogs-create-group: "true"
     networks:
       - app-network
 
