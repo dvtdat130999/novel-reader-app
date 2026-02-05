@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNAUTHENTICATED(4001, "Token is expired", HttpStatus.UNAUTHORIZED),
+    USER_NOT_EXISTED(4002, "User is not existed", HttpStatus.NOT_FOUND),
     NULL_EXCEPTION(9001, "Must not be null", HttpStatus.BAD_REQUEST),
     EMPTY_EXCEPTION(9002, "Must not be empty", HttpStatus.BAD_REQUEST),
     BLANK_EXCEPTION(9003, "Must not be blank", HttpStatus.BAD_REQUEST),
