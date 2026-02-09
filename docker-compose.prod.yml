@@ -9,12 +9,6 @@ services:
     # Lệnh này bảo Docker: "Hãy đọc file .env nằm cùng thư mục và nạp hết vào Container"
     env_file:
       - .env
-    environment:
-      - DB_URL=${DB_URL}
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=${DB_PASSWORD}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - JWT_EXPIRATION=86400000
     depends_on:
       - db-novel
     logging:
