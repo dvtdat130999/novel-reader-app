@@ -1,5 +1,6 @@
 package com.novelreader.demo.service.impl;
 
+
 import com.novelreader.demo.dto.request.AuthenticationRequest;
 import com.novelreader.demo.dto.request.UserRegistrationRequest;
 import com.novelreader.demo.dto.response.AuthenticationResponse;
@@ -33,30 +34,33 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse registerUser(UserRegistrationRequest request) {
-        // 1. Validate (Giữ nguyên như bài trước)
+        // 1. Kiểm tra Email đã tồn tại chưa
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
-        // 2. Mapping: DTO -> Entity (Thủ công)
-        // Sau này dùng MapStruct sẽ nhanh hơn
-        User user =
-                User.builder()
-                        .username(request.getUsername())
-                        .email(request.getEmail())
-                        .password(
-                                request.getPassword()) // Lưu ý: Chưa mã hóa (sẽ làm ở bài Security)
-                        .role(UserRole.USER) // Mặc định luôn là USER
-                        .build();
+        // 2. Mapping & BẢO MẬT: Mã hóa mật khẩu trước khi lưu
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                // QUAN TRỌNG: Dùng BCrypt để mã hóa mật khẩu
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(UserRole.USER) // Mặc định là USER
+                .build();
 
-        // 3. Save
-        User savedUser = userRepository.save(user);
+        // 3. Lưu vào Database
+        try {
+            user = userRepository.save(user);
+        } catch (Exception e) {
+//            log.error("Error saving user: ", e);
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
 
-        // 4. Mapping: Entity -> Response DTO
+        // 4. Trả về Response DTO
         return UserResponse.builder()
-                .id(savedUser.getId())
-                .username(savedUser.getUsername())
-                .email(savedUser.getEmail())
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .build();
     }
 

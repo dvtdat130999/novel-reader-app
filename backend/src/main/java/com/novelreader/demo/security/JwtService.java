@@ -29,11 +29,11 @@ public class JwtService {
     // Spring sẽ tìm key "application.security.jwt.secret-key"
     // và lấy giá trị tương ứng (đã được thay thế bởi biến môi trường từ .env)
     @NonFinal
-    @Value("${application.security.jwt.secret-key}")
+    @Value(value = "${application.security.jwt.secret-key}")
     protected String SIGNER_KEY;
 
     @NonFinal
-    @Value("${application.security.jwt.expiration}")
+    @Value(value = "${application.security.jwt.expiration}")
     protected long VALID_DURATION;
 
     /**
