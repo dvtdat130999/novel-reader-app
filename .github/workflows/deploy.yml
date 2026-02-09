@@ -44,6 +44,16 @@ jobs:
             # Login Docker Hub
             echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             
+            # TẠO FILE .env TỰ ĐỘNG TỪ GITHUB SECRETS (QUAN TRỌNG)
+            echo "Tạo file .env từ GitHub Secrets..."
+            # Xóa file cũ để đảm bảo sạch sẽ
+            rm -f .env
+            # Ghi từng dòng biến vào file .env
+            echo "DOCKERHUB_USERNAME=${{ secrets.PROD_DOCKERHUB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}" >> .env
+            echo "JWT_SECRET_KEY=${{ secrets.PROD_JWT_SECRET_KEY }}" >> .env
+            echo "DB_URL=${{ secrets.PROD_DB_URL }}" >> .env
+            echo "JWT_EXPIRATION=86400000" >> .env
             # 1. Tắt container cũ (Thêm 2>/dev/null để không báo lỗi đỏ nếu chưa có)
             docker-compose -f docker-compose.prod.yml down || true
             
