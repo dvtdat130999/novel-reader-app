@@ -6,6 +6,9 @@ services:
     restart: always              # <-- Đã thêm lại
     expose:
       - "8080"
+    # Lệnh này bảo Docker: "Hãy đọc file .env nằm cùng thư mục và nạp hết vào Container"
+    env_file:
+      - .env
     environment:
       # KHÔNG CẦN VIẾT GIÁ TRỊ CỤ THỂ, CHỈ CẦN KHAI BÁO TÊN BIẾN
       # Docker sẽ tự tìm giá trị trong file .env
