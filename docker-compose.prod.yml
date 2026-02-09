@@ -7,9 +7,13 @@ services:
     expose:
       - "8080"
     environment:
-      - DB_URL=jdbc:postgresql://db-novel:5432/noveldb
+      # KHÔNG CẦN VIẾT GIÁ TRỊ CỤ THỂ, CHỈ CẦN KHAI BÁO TÊN BIẾN
+      # Docker sẽ tự tìm giá trị trong file .env
+      - DB_URL
       - DB_USERNAME=postgres
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASSWORD
+      - JWT_SECRET_KEY
+      - JWT_EXPIRATION
     depends_on:
       - db-novel
     logging:
