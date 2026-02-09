@@ -18,16 +18,16 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
 
   # --- BACKEND SPRING BOOT ---
-#  app-backend:
-#    build: ./backend
-#    container_name: spring_boot_app
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      # Spring Boot cần kết nối vào DB, nên ta cũng truyền biến từ .env vào đây
-#      # Lưu ý: host vẫn là tên service 'db-novel' hoặc container_name 'postgres_container'
-#      DB_URL: jdbc:postgresql://postgres_container:5432/${DB_NAME}
-#      DB_USERNAME: ${DB_USERNAME}
-#      DB_PASSWORD: ${DB_PASSWORD}
-#    depends_on:
-#      - db-novel
+  app-backend:
+    build: ./backend
+    container_name: spring_boot_app
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring Boot cần kết nối vào DB, nên ta cũng truyền biến từ .env vào đây
+      # Lưu ý: host vẫn là tên service 'db-novel' hoặc container_name 'postgres_container'
+      DB_URL: jdbc:postgresql://postgres_container:5432/${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db-novel
