@@ -18,7 +18,6 @@ services:
         awslogs-region: ap-southeast-1
         awslogs-group: /ecs/app-backend
         awslogs-create-group: "true"
-        awslogs-stream-prefix: ecs # Giúp dễ nhìn hơn trong log stream
     networks:
       - app-network
 
@@ -38,7 +37,6 @@ services:
         awslogs-region: ap-southeast-1
         awslogs-group: /ecs/nginx-proxy
         awslogs-create-group: "true"
-        awslogs-stream-prefix: ecs
     networks:
       - app-network
 
@@ -58,7 +56,6 @@ services:
         awslogs-region: ap-southeast-1
         awslogs-group: /ecs/db-novel
         awslogs-create-group: "true"
-        awslogs-stream-prefix: ecs
     networks:
       - app-network
 
