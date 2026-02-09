@@ -10,13 +10,11 @@ services:
     env_file:
       - .env
     environment:
-      # KHÔNG CẦN VIẾT GIÁ TRỊ CỤ THỂ, CHỈ CẦN KHAI BÁO TÊN BIẾN
-      # Docker sẽ tự tìm giá trị trong file .env
-      - DB_URL
+      - DB_URL=${DB_URL}
       - DB_USERNAME=postgres
-      - DB_PASSWORD
-      - JWT_SECRET_KEY
-      - JWT_EXPIRATION
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_EXPIRATION=86400000
     depends_on:
       - db-novel
     logging:
