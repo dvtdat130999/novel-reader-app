@@ -15,7 +15,7 @@ Chào mừng bạn! Để dự án vận hành trơn tru và tránh xung đột 
 - **Format:** Tuân thủ Google Java Format.
 - **Lệnh thực hiện:**
     - `make format`: Tự động sửa code cho đẹp.
-    - `make check`: Kiểm tra format và chạy Unit Test (Yêu cầu Coverage > 70%).
+    - `make check`: Kiểm tra format và chạy Unit Test (Yêu cầu Coverage > 70%), check ở target/site/jacoco/index.html.
 
 ## 3. Quản lý Database (Flyway Migration)
 

@@ -1,7 +1,9 @@
 package com.novelreader.demo.controller;
 
+import com.novelreader.demo.dto.request.AuthenticationRequest;
 import com.novelreader.demo.dto.request.UserRegistrationRequest;
 import com.novelreader.demo.dto.response.ApiResponse;
+import com.novelreader.demo.dto.response.AuthenticationResponse;
 import com.novelreader.demo.dto.response.UserResponse;
 import com.novelreader.demo.service.UserService;
 import jakarta.validation.Valid;
@@ -25,5 +27,14 @@ public class AuthController {
             @RequestBody @Valid UserRegistrationRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(userService.registerUser(request)));
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request) {
+        var result = userService.authenticate(request);
+
+        return ApiResponse.<AuthenticationResponse>builder()
+                .result(result)
+                .build();
     }
 }
